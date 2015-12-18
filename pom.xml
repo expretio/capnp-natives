@@ -85,9 +85,9 @@
                             <classifier>linux64</classifier>
                             <classesDirectory>src/main/resources</classesDirectory>
                             <includes>
-                                <include>org/capnproto/compiler/linux/x64/capnp</include>
-                                <include>org/capnproto/javaplugin/linux/x64/capnpc-java</include>
-                                <include>org/capnproto/javaplugin/java.capnp</include>
+                                <include>org/expretio/maven/capnp/compiler/linux/x64/capnp</include>
+                                <include>org/expretio/maven/capnp/javaplugin/linux/x64/capnpc-java</include>
+                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -100,9 +100,9 @@
                             <classifier>win32</classifier>
                             <classesDirectory>src/main/resources</classesDirectory>
                             <includes>
-                                <include>org/capnproto/compiler/windows/x86/capnp.exe</include>
-                                <include>org/capnproto/javaplugin/windows/x86/capnpc-java.exe</include>
-                                <include>org/capnproto/javaplugin/java.capnp</include>
+                                <include>org/expretio/maven/capnp/compiler/windows/x86/capnp.exe</include>
+                                <include>org/expretio/maven/capnp/javaplugin/windows/x86/capnpc-java.exe</include>
+                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
                             </includes>
                         </configuration>
                     </execution>
