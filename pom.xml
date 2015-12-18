@@ -25,8 +25,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.expretio.maven.resource</groupId>
-    <artifactId>capnp-resource-provider</artifactId>
+    <groupId>org.expretio.maven</groupId>
+    <artifactId>capnp-natives</artifactId>
     <version>0.5.3-SNAPSHOT</version>
 
     <packaging>jar</packaging>
