@@ -1,1 +1,1 @@
-# capnp-resource-provider
+# capnp-natives

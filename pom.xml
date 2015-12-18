@@ -100,8 +100,8 @@
                             <classifier>win32</classifier>
                             <classesDirectory>src/main/resources</classesDirectory>
                             <includes>
-                                <include>org/capnproto/compiler/windoows/x86/capnp</include>
-                                <include>org/capnproto/javaplugin/windows/x86/capnpc-java</include>
+                                <include>org/capnproto/compiler/windows/x86/capnp.exe</include>
+                                <include>org/capnproto/javaplugin/windows/x86/capnpc-java.exe</include>
                                 <include>org/capnproto/javaplugin/java.capnp</include>
                             </includes>
                         </configuration>
