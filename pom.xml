@@ -92,6 +92,21 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>osx64</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>osx64</classifier>
+                            <classesDirectory>src/main/resources</classesDirectory>
+                            <includes>
+                                <include>org/expretio/maven/capnp/compiler/osx/x64/capnp</include>
+                                <include>org/expretio/maven/capnp/javaplugin/osx/x64/capnpc-java</include>
+                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>win32</id>
                         <goals>
                             <goal>jar</goal>
