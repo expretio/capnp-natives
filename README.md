@@ -8,8 +8,7 @@ capnp-natives
 This project bundles [Cap'n Proto](http://capnproto.org) platform dependent [compiler](https://capnproto.org/capnp-tool.html) and [java plugin](https://dwrensha.github.io/capnproto-java/index.html) into maven artifacts.
 
 
-Supported platforms
--------------------
+### Supported platforms
 
 - Linux 64-bit
 - Windows
