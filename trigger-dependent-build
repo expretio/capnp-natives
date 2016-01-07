@@ -17,12 +17,12 @@
 #   travis login
 #   travis token
 #
-auth_token=abcdefghijklmnopqrstuv
+auth_token=t0xzkyuKPsmYI4aNM1qJ3A
 
 # The Travis API endpoint. .com and .org are the commercial and free versions,
 # respectively; enterprise users will have their own hostname.
 #
-endpoint=https://api.travis-ci.com
+endpoint=https://api.travis-ci.org
 
 # The ID of the tests repo. To find the ID of a repo from its slug `$slug`, run:
 #   curl -H 'Authorization: token $auth_token' https://api.travis-ci.com/repos/$slug
