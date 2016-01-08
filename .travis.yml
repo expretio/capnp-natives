@@ -4,6 +4,7 @@ jdk:
 
 script: mvn clean javadoc:javadoc site
 
+
 after_success:
   - chmod +x trigger-dependent-build
   - ./trigger-dependent-build
