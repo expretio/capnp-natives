@@ -1,7 +1,8 @@
 language: java
-script: mvn clean javadoc:javadoc site
 jdk:
   - oraclejdk7
-  
+
+script: mvn clean javadoc:javadoc site
+
 after_success:
-  - ./trigger-dependent-build  
+  - ./trigger-dependent-build
