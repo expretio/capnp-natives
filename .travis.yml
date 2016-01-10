@@ -15,10 +15,10 @@ before_install:
   - cp settings.xml ~/.m2
 
 install:
-  - mvn -B -T $MAVEN_THREADS clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
+  mvn -B -T $MAVEN_THREADS clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
 
 deploy:
-  - mvn -B -T $MAVEN_THREADS org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
+  mvn -B -T $MAVEN_THREADS org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
 
 after_success:
   - bash ./trigger-dependent-build
