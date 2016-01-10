@@ -6,14 +6,11 @@ env:
     - secure: "WsB8Wa6MebKzLT/fngsVJeI8zscdwQ8sPwAgviuc3bitGCUvCkoJbbkKYw7zmGp7UxWvxYYlfyNs6AyCkCiZmjg21HndHAIJefp2S8d0GZXGl38q89RjLtOrsvu0KgJQomIqWc7KfGAWh2zqxSBrpGcAYBlYn1PCr67jwYz437Q/37mdOQWaEEE0Jex3rj6EAhAQDh9dqvORp8HMEZzSCDLYnSTnv2SkVhD4iUofSdRKJ/BsF6VyIfiCIfKGavjQb3nF3qmVmO8SUF/bbVXcDSo+uRTHB61D9FuDqBYjWJmcxVoeMesshqYGQ0BLYKDhqDPERYopyett7FfXDNOcrxomjCaPyNdKKLZaWon0F8aPTuUL9nAeJ1FJm2MLt8bEnjCINrpTtvaudOweslGzt1yH5OSTZhEhNFP9RI7HxMGqvx0mhP4WyTMpM1zWl3QyKqfpV+espkquIeFsCyBdxtKciCgemRaUsedWg1PDXB6xGBYyJKWonD3aDGzIQ+2A79aV0EeJm03Xzym9q7ZpmhYO6s6+toGBya5puCWq5HQ92hSvwPQ7Giya/F9RbHKnyEuJmgKPFT1bFST3SnI4Dd76oiXuZfMmrX0KVR4Zjuqu7lwH0v9jD8992wLAsBB8Rohw7oQeotfj4QvWasappuv4CHcPE3+UT3pYjr+mYSA="
     - MAVEN_OPTS="-Xmx128m -Dquiet=true -Dmaven.javadoc.failOnError=false"
 
-cache:
-  directories:
-    - $HOME/.m2
-
 jdk:
   - oraclejdk7
 
 before_install:
+  - mkdir $HOME/.m2
   - cp settings.xml $HOME/.m2
 
 install:
