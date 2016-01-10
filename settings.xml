@@ -6,8 +6,8 @@
     <servers>
         <server>
             <id>oss-snapshots</id>
-            <username>${OSS-SONATYPE-USERNAME}</username>
-            <password>${OSS-SONATYPE-PASSWORD}</password>
+            <username>${OSS_SONATYPE_USERNAME}</username>
+            <password>${OSS_SONATYPE_PASSWORD}</password>
         </server>
     </servers>
 
