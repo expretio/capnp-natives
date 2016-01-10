@@ -17,7 +17,7 @@ before_install:
   - cp settings.xml ~/.m2
 
 install:
-  - mvn -B clean javadoc:jar source:jar org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot -Dmaven.javadoc.failOnError=false
+  - mvn -B clean javadoc:jar source:jar org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DaltDeploymentRepository=oss-sonatype::default::https://oss.sonatype.org/content/repositories/snapshots -Dmaven.javadoc.failOnError=false
 
 after_success:
   - bash ./trigger-dependent-build
