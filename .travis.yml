@@ -4,21 +4,22 @@ env:
   global:
     - secure: "YgXn8j76FUzoqjbwW5vNRC08RhW8fWRXybRHLlLGXtfqAw0kTQ8Kxd+MEf3OLkj/7oehYUZt/OU6jzhi9SfoABW/nEagmc2Ww4vfUxHQhcNmz5j3z+S0+PYhL2tFfEMhxMdUXwULHbQpIcVWl3/F8qNg+w7FINkcqote8ZpoqpVEfA8nJQLHLHYMXc2arYZ5gQ/3iR6K0jnudZ3nlB1SBNaXmR+vbh5ShRKaS63Prh4aMKpOGrD75IJ4WB202BAIB0fMwQb9tAYOtih8gXRH2jE0z+0Y9zN0BuEw9iG0XK+i3QhMKzbkc0bbreWEL7thj7jEkAt776C2yCKr7N4XwXYUVI9VE0hSwWaf/O+7Yd6wTcwhGMRyn1zEpwIGX4amq6DaKsR2qvbxVysjHv3V1PE1SAeaU7qb1myFLDRpkhlczRrgl8ctozB5kqrxJA7dyOr3mU5yhCBCm3DTo/52Sfbcl5qgzDeRVrY87mCZ2n5FPeZmbvWdoYu9QIQQD9Nyv7tedKFM6k8WW/5ufpWJ33DKEog3ah25DRrKDqdKLRBcip2W1iK6+F5FnFg1M/6O8m5m+M3wKCBieUHR3WiZo+R3wpm/HCzpc/PDTOKcLqUHtF+ApDi0hSb+Ki4oohxIOXv93mgz0QP4QYASP1MgFIlFqKaXGBh8YXXCHqosPUg="
     - secure: "DVSg326McOyJ/DlHyNyWSfB8nSa4eQj+cGUv3WBjgdhRIBlX/KkVrwXKMTKCTFxL6LrWc09IhWKWD3YVhPBfC6dHBb7o/s6GXIa5814EkUuE0wKiIfxP+jwZje6hxuM2mwF4aWBNJfATRHpHC73JD2Yd0heCoq0Ykmb92dgl/gk/yUnotrVR7sUXWfO/br3guh+lWGwGm+ebkku9dCrPURmgHatYQjNUQ70DgFi2jheFE+Go3dJF/uJZq8LMPWsiEaTqQuFuScluU0gQhMyfsMM/0JNF8MJ3bpnnCtweSfG+BWvhikVd1ZMjY1lvOr0D1FCYJV+0h6ftYN50k90Sn+M1ZPBBTb+6acuCtdU0fYLB5w4s4p3DkIbsMCdf5wdQxg0DpGc3pXdOC1oHiP9yv671jZUqcwIGN2v8kDSHgrLolX860+Yhqxt7j826uakJ7hbdRWhJXVRAnwByeKl+frujdbQYKXmzpLXICmVHvzwvNPSUUgC+QVf5sD9hHhVuGxD1KZFz9T9lljkkhLDNNBdw/6bY1hS1XIpSjRfwRQGClB59woAvHlVRBUF3dm2MIeTtOFUZ5e09IX2tDUAgGzfztV260VZiAhLMsOP2nKixU1VWNLkiqhSuVXFhlOdiDsHdYYaMOREbefdfU1/lEES38dk09fI141ezOnsG/SA="
-    - MAVEN_THREADS=2
-    - MAVEN_OPTS="-Xmx128m"
+
+cache:
+  directories:
+    - $HOME/.m2
 
 jdk:
   - oraclejdk7
 
 before_install:
-  - mkdir -p ~/.m2
   - cp settings.xml ~/.m2
 
 install:
-  mvn -B -T $MAVEN_THREADS clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
+  - mvn -B clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
 
 deploy:
-  mvn -B -T $MAVEN_THREADS org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
+  - mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
 
-after_success:
+after_script:
   - bash ./trigger-dependent-build
