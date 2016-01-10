@@ -1,8 +1,21 @@
 language: java
+
+env:
+  global:
+    - secure: "pxjhlzTzFj8iuvx4stjMrC2LY7xVfby0ZUn+PfdS3wvOA5yWTiMUAx9vqmEWMSkcolIOAXb5/HG4SP6lVNPY48WOW5zn4V9nw/XbEYDbz7e1WcEIBYB2F9W4ZL4I3RgICewaLtscAPIoP1eQerTXlOLcHwTjc+dAL4EbMsu0dODQYrkh8BIgArBZR2aZdsnxtlqKmHLogxu/Sf6x3Pvicipk1e9L4iKtqN6wqeq2GNS7iX3Wh7x0/BYpSp9wqVzLuvZDqqcEsNOuD/LZEWYZ3IxfbWuGS4dUtYH0Yngvkq3CjjCMICE00ZQwrHsYscv4pJaGjYvNnf4E3XP4EhnHCh+WNOFPduDq1DivNvUCT7XwVh47vcGrK93kV1ShWl8opxgbu8HudgsZCqZgg917itj6GE8to/xgoaMeQQYdghqyyZ/6n3Kc+JMQIMe0BTV2gVNgYqrDKehznNBtXGUXkvsqSvhwdMoz4y0Ns9qoGLzbZ2pAfC6QjxojIS4NwHOc3YEGgsMuQ3u3jPQe8ba7HCHY3mlHdWCRbj3IvEHwwEESooFfLdOduvkhOtaCwy91b8lmqmtkfm09jOpDxHKORekxJeCZCIVEZ3kHgXb4Mtt4WK+oHUlW+lKo/Ljj7xCk4KXCWtDrSTaYAtJCqO7cfy5SpDrTDC1kGbpBRso1WVs="
+    - secure: "RWTU6L1uEiCN//mISc7zy1e1EihbMyV35Ri7i2wsm/RpYsWJqsnxu27xwM/q9i+fM01JyeKFZRWP8eQmolwCQdLN4zxDzet/dmMYCHXTiI3frWXu9xiTpA9R5D3swp2dnfJOTUhcuZsIv2c681ClUZnAPokZolKWe4q5gsBHxl+Ty0HprG9m64xNlayFgun2q9TzqfP2BaHsMXAm0arzV9IiOokLElK+iIAFI4Alchq1WslD4oNJqpEOOraOAPYmTGoTw8uIqqIf5Nk7MkiCrFtdDvDsi8h4Dq84mI3haF8UezHEn1gAVwYfCq2m76Bag9S+5dtqKFvOpRPWEguains7Y7egy4QDBJjqyBQyF+nU8+V3LwKhuYc+s5w7TWTXLISf/2Q8DPyWohjIDZesaSLeSnyZvA2A4R6QRIvW5VbDSvShbVWLY1/Kdcp6OEbWstf3mWHWMrS7xQpGVpGZkLCitCFRS0olcZ1drE5NkcRC0TI66xodAPwx7iE3yOfg34TDD4GY9OIogHg9NQ6vvlw8QZYyYGfDKRy3a4q2F5iU/pRXy8P3z/j/vqHPNCgP+1/Gmc283LuFYkJbr5itQxR20Mh4Qef5FafWkL3vK9H/M6QWPYqTchkVFz+OnynZjU1DKFkYEg2I9v9bfkBQCWamU7XJXRIYfE23CCtkhI8="
+    - MAVEN_THREADS=2
+
 jdk:
   - oraclejdk7
 
-script: mvn clean javadoc:jar source:jar site
+before_script:
+  - mkdir -p ~/.m2
+  - cp settings.xml ~/.m2
+
+script:
+  - mvn -B -T $MAVEN_THREADS clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
 
 after_success:
+  - mvn -B -T $MAVEN_THREADS org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
   - bash ./trigger-dependent-build
