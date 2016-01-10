@@ -2,9 +2,9 @@ language: java
 
 env:
   global:
-    - secure: "YgXn8j76FUzoqjbwW5vNRC08RhW8fWRXybRHLlLGXtfqAw0kTQ8Kxd+MEf3OLkj/7oehYUZt/OU6jzhi9SfoABW/nEagmc2Ww4vfUxHQhcNmz5j3z+S0+PYhL2tFfEMhxMdUXwULHbQpIcVWl3/F8qNg+w7FINkcqote8ZpoqpVEfA8nJQLHLHYMXc2arYZ5gQ/3iR6K0jnudZ3nlB1SBNaXmR+vbh5ShRKaS63Prh4aMKpOGrD75IJ4WB202BAIB0fMwQb9tAYOtih8gXRH2jE0z+0Y9zN0BuEw9iG0XK+i3QhMKzbkc0bbreWEL7thj7jEkAt776C2yCKr7N4XwXYUVI9VE0hSwWaf/O+7Yd6wTcwhGMRyn1zEpwIGX4amq6DaKsR2qvbxVysjHv3V1PE1SAeaU7qb1myFLDRpkhlczRrgl8ctozB5kqrxJA7dyOr3mU5yhCBCm3DTo/52Sfbcl5qgzDeRVrY87mCZ2n5FPeZmbvWdoYu9QIQQD9Nyv7tedKFM6k8WW/5ufpWJ33DKEog3ah25DRrKDqdKLRBcip2W1iK6+F5FnFg1M/6O8m5m+M3wKCBieUHR3WiZo+R3wpm/HCzpc/PDTOKcLqUHtF+ApDi0hSb+Ki4oohxIOXv93mgz0QP4QYASP1MgFIlFqKaXGBh8YXXCHqosPUg="
+    - secure: "ZXFv57r1lzrCjCzhfEhsqzu/mK+0hi9U2bJHwLyEh9dXMJf8HVCghqwTkm1D298/fvehIjt27uOvP8cbdLtb7uOzV9ZeQaNjqHACPjNMSbwxNwgHwoOe3p6sTGGNFI/KDRrqYYYC2GfIz2Rqp5UD+Ejm9E3Yqof5qey307xoZr+jr4Y75FJA6cF6z01fkAYEfQgzvVAsEAPwQsDo7i4opZ2dh4QHomuO+V/c93is7TScj+Yv+WwYQEWGnPelvZhHWlphNxG1CQxja2zKMWYKttlmmUoFO7aMySPr5nTjHdkm4LxQrlBV1redwWQjZgQKvyfxe8n2FQC+2TtEHndmk9gnRdASLDADzPrWaVatngw6/rmPjW6sb9MhqUtsTUxA2UfWDq545G2ZobpBQI1UxItFpi1vZgDhpJSZ+lQfavKq+YwQ7W20vN/1s8wVbFtV8dvts2W66gdvL2a2OUiYP2SzVtWFHJymY11iEvnoKxYfY0pia8yqfV9ohlaL45QsYkTQvxloDheHUJUU9Ag1laiznVwqsaY1h4p1APinjVNa72H9jBqhqg83VK/jeM2pHiynlNOZHvQx4z8aKhC6g2klkv99aoKpo0f+F/SE0NAcebWkK99ANt8lgz3h5Pf675PbWwYdbjc+NczjVxqwS2Pp71EB4AFrPZwcZVwxo9o="
     - secure: "WsB8Wa6MebKzLT/fngsVJeI8zscdwQ8sPwAgviuc3bitGCUvCkoJbbkKYw7zmGp7UxWvxYYlfyNs6AyCkCiZmjg21HndHAIJefp2S8d0GZXGl38q89RjLtOrsvu0KgJQomIqWc7KfGAWh2zqxSBrpGcAYBlYn1PCr67jwYz437Q/37mdOQWaEEE0Jex3rj6EAhAQDh9dqvORp8HMEZzSCDLYnSTnv2SkVhD4iUofSdRKJ/BsF6VyIfiCIfKGavjQb3nF3qmVmO8SUF/bbVXcDSo+uRTHB61D9FuDqBYjWJmcxVoeMesshqYGQ0BLYKDhqDPERYopyett7FfXDNOcrxomjCaPyNdKKLZaWon0F8aPTuUL9nAeJ1FJm2MLt8bEnjCINrpTtvaudOweslGzt1yH5OSTZhEhNFP9RI7HxMGqvx0mhP4WyTMpM1zWl3QyKqfpV+espkquIeFsCyBdxtKciCgemRaUsedWg1PDXB6xGBYyJKWonD3aDGzIQ+2A79aV0EeJm03Xzym9q7ZpmhYO6s6+toGBya5puCWq5HQ92hSvwPQ7Giya/F9RbHKnyEuJmgKPFT1bFST3SnI4Dd76oiXuZfMmrX0KVR4Zjuqu7lwH0v9jD8992wLAsBB8Rohw7oQeotfj4QvWasappuv4CHcPE3+UT3pYjr+mYSA="
-    - MAVEN_OPTS="-Xmx128m -Dmaven.artifact.threads=2 -Dquiet=true -Dmaven.javadoc.failOnError=false"
+    - MAVEN_OPTS="-Xmx128m -Dquiet=true -Dmaven.javadoc.failOnError=false"
 
 cache:
   directories:
@@ -17,7 +17,7 @@ before_install:
   - cp settings.xml $HOME/.m2
 
 install:
-  - mvn -s $HOME/.m2/settings.xml -B clean javadoc:jar source:jar deploy -DaltDeploymentRepository=oss-sonatype::default::https://oss.sonatype.org/content/repositories/snapshots
+  - mvn -e -B -T 4 clean javadoc:jar source:jar deploy -DaltDeploymentRepository=oss-sonatype::default::https://oss.sonatype.org/content/repositories/snapshots
 
 after_success:
   - bash ./trigger-dependent-build
