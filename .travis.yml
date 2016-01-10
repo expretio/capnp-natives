@@ -18,7 +18,7 @@ before_install:
 install:
   - mvn -B clean javadoc:jar source:jar site -Dmaven.javadoc.failOnError=false -Dquiet=true
 
-deploy:
+after_install:
   - mvn -B org.sonatype.plugins:nexus-staging-maven-plugin:deploy -DnexusUrl=https://oss.sonatype.org/content/repositories/snapshots -DserverId=oss-snapshots -DreleaseType=snapshot
 
 after_script:
