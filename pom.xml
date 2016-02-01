@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!--
     Copyright (c) 2015 ExPretio Technologies, Inc. and contributors
     Licensed under the MIT License:
@@ -39,12 +41,25 @@
         <name>Expretio Technologies, Inc</name>
     </organization>
 
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/expretio/capnp-natives/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <distribution>manual</distribution>
+            <url>https://github.com/expretio/capnp-natives/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 
         <java.javadoc.version>2.10.3</java.javadoc.version>
-        
+
         <surefire.version>2.18.1</surefire.version>
 
         <maven.version>3.2.5</maven.version>
@@ -60,7 +75,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.5</version>
                 <executions>
                     <execution>
                         <id>default-compile</id>
