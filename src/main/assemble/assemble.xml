@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<!--
+    Copyright (c) 2015 ExPretio Technologies, Inc. and contributors
+    Licensed under the MIT License:
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+  -->
+<project name="assemble"
+         default="assemble"
+         xmlns:nx="urn:nuxeo-build"
+         xmlns:artifact="urn:nuxeo-artifact">
+
+    <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build"/>
+    <taskdef resource="org/nuxeo/build/artifact/antlib.xml" uri="urn:nuxeo-artifact"/>
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
+    <target name="assemble" depends="header-info">
+
+        <basename property="capnp-natives.fileNameWoSuffix" file="${capnp-natives.fileName}" suffix="xml"/>
+
+        <copy todir="${capnp-natives.outputDirectory}">
+            <fileset
+                dir="${maven.project.build.outputDirectory}"
+                includes="**"
+                excludes="**/${capnp-natives.fileNameWoSuffix}-*"/>
+        </copy>
+
+        <for param="dir">
+            <dirset
+                dir="${capnp-natives.outputDirectory}"
+                includes="${capnp-natives.basePath}/**/META-INF"/>
+            <sequential>
+
+                <dirname property="dirroot" file="@{dir}"/>
+                <basename property="arch" file="${dirroot}"/>
+                <dirname property="osdir" file="${dirroot}"/>
+                <basename property="os" file="${osdir}"/>
+
+                <var
+                    name="jarfile"
+                    value="${maven.project.build.directory}/${maven.project.artifactId}-${maven.project.version}-${os}-${arch}.jar"/>
+
+                <jar destfile="${jarfile}">
+                    <fileset dir="${capnp-natives.outputDirectory}">
+                        <include name="${capnp-natives.basePath}/${os}/${arch}/**"/>
+                        <exclude name="**/META-INF/**"/>
+                    </fileset>
+                    <fileset dir="${dirroot}">
+                        <include name="META-INF/**"/>
+                    </fileset>
+                </jar>
+
+                <var name="dirroot" unset="true"/>
+                <var name="arch" unset="true"/>
+                <var name="osdir" unset="true"/>
+                <var name="os" unset="true"/>
+
+                <artifact:attach file="${jarfile}" type="jar"/>
+
+            </sequential>
+        </for>
+
+        <var
+            name="jarfile"
+            value="${maven.project.build.directory}/${maven.project.artifactId}-${maven.project.version}.jar"/>
+
+        <jar destfile="${jarfile}">
+            <fileset dir="${capnp-natives.outputDirectory}">
+                <exclude name="${capnp-natives.basePath}/META-INF/**"/>
+            </fileset>
+        </jar>
+
+    </target>
+
+    <target name="header-info">
+        <echo level="info">File name = ${capnp-natives.fileName}</echo>
+        <echo level="info">Base file name = ${capnp-natives.baseFileName}</echo>
+        <echo level="info">Fragment file name = ${capnp-natives.fragmentFileName}</echo>
+        <echo level="info">Output directory = ${capnp-natives.outputDirectory}</echo>
+    </target>
+
+</project>

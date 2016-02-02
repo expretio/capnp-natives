@@ -31,7 +31,7 @@
     <artifactId>capnp-natives</artifactId>
     <version>0.5.3-SNAPSHOT</version>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>capnp-resource-provider</name>
 
@@ -63,23 +63,28 @@
         <surefire.version>2.18.1</surefire.version>
 
         <maven.version>3.2.5</maven.version>
+
+        <capnp-natives.fileName>capnp-natives.xml</capnp-natives.fileName>
+        <capnp-natives.baseFileName>capnp-natives-base.xml</capnp-natives.baseFileName>
+        <capnp-natives.fragmentFileName>capnp-natives-fragment.xml</capnp-natives.fragmentFileName>
+        <capnp-natives.basePath>org/expretio/maven/capnp/natives</capnp-natives.basePath>
+        <capnp-natives.outputDirectory>${project.build.directory}/capnp</capnp-natives.outputDirectory>
+
+        <assembly.file>src/main/assemble/assemble.xml</assembly.file>
     </properties>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5</version>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.2</version>
                 <executions>
                     <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
+                        <id>resources</id>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -92,53 +97,121 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
                 <executions>
                     <execution>
-                        <id>linux64</id>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <classifier>linux64</classifier>
-                            <classesDirectory>src/main/resources</classesDirectory>
-                            <includes>
-                                <include>org/expretio/maven/capnp/compiler/linux/x64/capnp</include>
-                                <include>org/expretio/maven/capnp/javaplugin/linux/x64/capnpc-java</include>
-                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
-                            </includes>
+                            <source>
+
+                                import static groovy.io.FileType.*;
+                                import groovy.util.*;
+                                import java.io.*;
+                                import java.nio.*;
+                                import org.dom4j.*;
+                                import org.dom4j.io.*;
+                                import be.hikage.xdt4j.*;
+
+                                capnpFileName = properties["capnp-natives.fileName"];
+                                capnpBaseFileName = properties["capnp-natives.baseFileName"];
+                                capnpFragmentFileName = properties["capnp-natives.fragmentFileName"];
+                                capnpOutputDirectory = new File( properties["capnp-natives.outputDirectory"] );
+                                capnpBasePathName = properties["capnp-natives.basePath"];
+                                capnpBaseFile =
+                                    new File(
+                                        project.build.outputDirectory,
+                                        capnpBaseFileName );
+                                capnpGlobalMetaInfDir =
+                                    new File(
+                                        project.build.outputDirectory,
+                                        "META-INF" );
+                                capnpFile =
+                                    new File(
+                                        capnpGlobalMetaInfDir,
+                                        capnpFileName );
+                                basePath =
+                                    new File(
+                                        project.build.outputDirectory,
+                                        capnpBasePathName );
+
+                                capnpGlobalMetaInfDir.mkdirs();
+                                capnpOutputDirectory.mkdirs();
+
+                                capnpFile &lt;&lt; capnpBaseFile.text;
+
+                                baseDescriptorDoc = new SAXReader().read( capnpBaseFile );
+
+                                basePath.traverse(
+                                    [
+                                        type: FILES,
+                                        nameFilter: capnpFragmentFileName
+                                    ],
+                                    {
+                                        target =
+                                            new File(
+                                                new File( capnpOutputDirectory, capnpBasePathName ),
+                                                it.parentFile.parentFile.name + "/" + it.parentFile.name + "/META-INF"
+                                            );
+
+                                        target.mkdirs();
+
+                                        mergeXml(
+                                            baseDescriptorDoc,
+                                            it,
+                                            new File( target, capnpFileName )
+                                        );
+
+                                        mergeXml( new SAXReader().read( capnpFile ), it, capnpFile );
+                                    }
+                                );
+
+                                def mergeXml( Document baseDoc, File inFile, File outFile )
+                                {
+                                    transformDoc = new SAXReader().read( inFile );
+
+                                    xmlWriter =
+                                        new XMLWriter(
+                                            new BufferedWriter( new FileWriter( outFile ) ),
+                                            OutputFormat.createPrettyPrint()
+                                        );
+
+                                    xmlWriter.write(
+                                        new XdtTransformer().transform( baseDoc, transformDoc ),
+                                    )
+
+                                    xmlWriter.close();
+                                }
+
+                            </source>
                         </configuration>
                     </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>be.hikage</groupId>
+                        <artifactId>xdt4j</artifactId>
+                        <version>1.0.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.nuxeo.build</groupId>
+                <artifactId>ant-assembly-maven-plugin</artifactId>
+                <version>2.0.4</version>
+                <executions>
                     <execution>
-                        <id>osx64</id>
+                        <id>packaging</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>build</goal>
                         </goals>
                         <configuration>
-                            <classifier>osx64</classifier>
-                            <classesDirectory>src/main/resources</classesDirectory>
-                            <includes>
-                                <include>org/expretio/maven/capnp/compiler/osx/x64/capnp</include>
-                                <include>org/expretio/maven/capnp/javaplugin/osx/x64/capnpc-java</include>
-                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>win32</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>win32</classifier>
-                            <classesDirectory>src/main/resources</classesDirectory>
-                            <includes>
-                                <include>org/expretio/maven/capnp/compiler/windows/x86/capnp.exe</include>
-                                <include>org/expretio/maven/capnp/javaplugin/windows/x86/capnpc-java.exe</include>
-                                <include>org/expretio/maven/capnp/javaplugin/java.capnp</include>
-                            </includes>
+                            <buildFile>${assembly.file}</buildFile>
                         </configuration>
                     </execution>
                 </executions>
