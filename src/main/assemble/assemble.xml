@@ -67,12 +67,12 @@
                     </fileset>
                 </jar>
 
+                <artifact:attach file="${jarfile}" type="jar" classifier="${os}-${arch}"/>
+
                 <var name="dirroot" unset="true"/>
                 <var name="arch" unset="true"/>
                 <var name="osdir" unset="true"/>
                 <var name="os" unset="true"/>
-
-                <artifact:attach file="${jarfile}" type="jar"/>
 
             </sequential>
         </for>
