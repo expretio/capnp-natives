@@ -27,9 +27,9 @@
     <natives xdt:Transform="Insert">
         <os name="OSX"/>
         <arch name="x86_64">
-            <capnp-exec-path>osx/x86_64/capnp</capnp-exec-path>
-            <capnpc-java-exec-path>osx/x86_64/capnpc-java</capnpc-java-exec-path>
-            <capnp-java-schema-path>linux/x86_64/java.capnp</capnp-java-schema-path>
+            <capnp-exec-path>osx/x86-64/capnp</capnp-exec-path>
+            <capnpc-java-exec-path>osx/x86-64/capnpc-java</capnpc-java-exec-path>
+            <capnp-java-schema-path>osx/x86-64/java.capnp</capnp-java-schema-path>
         </arch>
     </natives>
 
