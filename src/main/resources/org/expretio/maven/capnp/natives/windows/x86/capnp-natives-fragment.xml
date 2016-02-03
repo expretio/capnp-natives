@@ -28,7 +28,8 @@
         <os name="Windows"/>
         <arch name="x86">
             <capnp-exec-path>windows/x86/capnp.exe</capnp-exec-path>
-            <capnpcjava-exec-path>windows/x86/capnpc-java.exe</capnpcjava-exec-path>
+            <capnpc-java-exec-path>windows/x86/capnpc-java.exe</capnpc-java-exec-path>
+            <capnp-java-schema-path>linux/x86_64/java.capnp</capnp-java-schema-path>
         </arch>
     </natives>
 

@@ -83,9 +83,11 @@
 
         <jar destfile="${jarfile}">
             <fileset dir="${capnp-natives.outputDirectory}">
-                <exclude name="${capnp-natives.basePath}/META-INF/**"/>
+                <exclude name="${capnp-natives.basePath}/**/META-INF/**"/>
             </fileset>
         </jar>
+
+        <artifact:attach file="${jarfile}" type="jar"/>
 
     </target>
 

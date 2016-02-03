@@ -28,7 +28,8 @@
         <os name="OSX"/>
         <arch name="x86_64">
             <capnp-exec-path>osx/x86_64/capnp</capnp-exec-path>
-            <capnpcjava-exec-path>osx/x86_64/capnpc-java</capnpcjava-exec-path>
+            <capnpc-java-exec-path>osx/x86_64/capnpc-java</capnpc-java-exec-path>
+            <capnp-java-schema-path>linux/x86_64/java.capnp</capnp-java-schema-path>
         </arch>
     </natives>
 
