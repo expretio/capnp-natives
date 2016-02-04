@@ -54,18 +54,6 @@
         </license>
     </licenses>
 
-    <repositories>
-        <repository>
-            <id>nuxeo-repo</id>
-            <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>nuxeo-plugin-repo</id>
