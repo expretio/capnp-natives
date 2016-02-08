@@ -27,11 +27,119 @@
          xmlns:nx="urn:nuxeo-build"
          xmlns:artifact="urn:nuxeo-artifact">
 
+    <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy"/>
+
     <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build"/>
     <taskdef resource="org/nuxeo/build/artifact/antlib.xml" uri="urn:nuxeo-artifact"/>
     <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
-    <target name="assemble" depends="header-info">
+    <target name="prepare-package">
+
+        <groovy>
+
+            import static groovy.io.FileType.*;
+            import groovy.util.*;
+            import groovy.xml.*;
+            import java.io.*;
+            import java.nio.*;
+            import org.dom4j.*;
+            import org.dom4j.io.*;
+            import be.hikage.xdt4j.*;
+
+            File outputDirectory = new File( properties["maven.project.build.outputDirectory"] );
+            String capnpFileName = properties["capnp-natives.fileName"];
+            String capnpBaseFileName = properties["capnp-natives.baseFileName"];
+            String capnpFragmentFileName = properties["capnp-natives.fragmentFileName"];
+            String capnpIndexFileName = properties["capnp-natives.indexFileName"];
+            File capnpOutputDirectory = new File( properties["capnp-natives.outputDirectory"] );
+            String capnpBasePathName = properties["capnp-natives.basePath"];
+
+            File capnpBaseFile = new File( outputDirectory, capnpBaseFileName );
+            File capnpGlobalMetaInfDir = new File( outputDirectory, "META-INF" );
+            File capnpFile = new File( capnpGlobalMetaInfDir, capnpFileName );
+
+            File basePath = new File( outputDirectory, capnpBasePathName );
+
+            File indexFile = new File( outputDirectory, capnpIndexFileName );
+
+            capnpGlobalMetaInfDir.mkdirs();
+            capnpOutputDirectory.mkdirs();
+
+            capnpFile.write( capnpBaseFile.text );
+
+            baseDescriptorDoc = new SAXReader().read( capnpBaseFile );
+
+            Writer indexFileWriter = indexFile.newPrintWriter();
+            indexFileXml = new MarkupBuilder( indexFile.newPrintWriter() );
+
+            indexFileXml.index
+            {
+                basePath.traverse(
+                    [
+                        type: FILES,
+                        nameFilter: capnpFragmentFileName
+                    ],
+                    {
+                        archFile = it.parentFile;
+                        osFile = archFile.parentFile;
+
+                        target =
+                            new File(
+                                new File( capnpOutputDirectory, capnpBasePathName ),
+                                osFile.name + "/" + archFile.name + "/META-INF"
+                            );
+
+                        target.mkdirs();
+
+                        File descriptorFile = new File( target, capnpFileName );
+
+                        mergeXml(
+                            baseDescriptorDoc,
+                            it,
+                            descriptorFile
+                        );
+
+                        descriptor = new XmlParser().parse( descriptorFile );
+                        descriptor.natives.each
+                        {
+                            natives ->
+                            entry
+                            {
+                                'os-name'( natives.os.@name[0] );
+                                'arch-names'( natives.arch.@name.join( "," ) );
+                                'maven-classifier'( osFile.name + "-" + archFile.name );
+                            }
+                        }
+
+                        indexFileWriter.close();
+
+                        mergeXml( new SAXReader().read( capnpFile ), it, capnpFile );
+                    }
+                );
+            }
+
+            def mergeXml( Document baseDoc, File inFile, File outFile )
+            {
+                transformDoc = new SAXReader().read( inFile );
+
+                xmlWriter =
+                    new XMLWriter(
+                        new BufferedWriter( new FileWriter( outFile ) ),
+                        OutputFormat.createPrettyPrint()
+                    );
+
+                xmlWriter.write(
+                    new XdtTransformer().transform( baseDoc, transformDoc ),
+                )
+
+                xmlWriter.close();
+            }
+
+        </groovy>
+
+    </target>
+
+    <target name="assemble" depends="header-info, prepare-package">
 
         <basename property="capnp-natives.fileNameWoSuffix" file="${capnp-natives.fileName}" suffix="xml"/>
 
@@ -48,54 +156,61 @@
                 includes="${capnp-natives.basePath}/**/META-INF"/>
             <sequential>
 
-                <dirname property="dirroot" file="@{dir}"/>
-                <basename property="arch" file="${dirroot}"/>
-                <dirname property="osdir" file="${dirroot}"/>
-                <basename property="os" file="${osdir}"/>
+                <dirname property="dirRoot" file="@{dir}"/>
+                <basename property="arch" file="${dirRoot}"/>
+                <dirname property="osDir" file="${dirRoot}"/>
+                <basename property="os" file="${osDir}"/>
 
                 <var
-                    name="jarfile"
+                    name="jarFile"
                     value="${maven.project.build.directory}/${maven.project.artifactId}-${maven.project.version}-${os}-${arch}.jar"/>
 
-                <jar destfile="${jarfile}">
+                <jar destfile="${jarFile}">
                     <fileset dir="${capnp-natives.outputDirectory}">
                         <include name="${capnp-natives.basePath}/${os}/${arch}/**"/>
                         <exclude name="**/META-INF/**"/>
                     </fileset>
-                    <fileset dir="${dirroot}">
+                    <fileset dir="${dirRoot}">
                         <include name="META-INF/**"/>
                     </fileset>
                 </jar>
 
-                <artifact:attach file="${jarfile}" type="jar" classifier="${os}-${arch}"/>
+                <artifact:attach file="${jarFile}" type="jar" classifier="${os}-${arch}"/>
 
-                <var name="dirroot" unset="true"/>
+                <var name="dirRoot" unset="true"/>
                 <var name="arch" unset="true"/>
-                <var name="osdir" unset="true"/>
+                <var name="osDir" unset="true"/>
                 <var name="os" unset="true"/>
 
             </sequential>
         </for>
 
         <var
-            name="jarfile"
+            name="jarFile"
             value="${maven.project.build.directory}/${maven.project.artifactId}-${maven.project.version}.jar"/>
 
-        <jar destfile="${jarfile}">
+        <jar destfile="${jarFile}">
             <fileset dir="${capnp-natives.outputDirectory}">
                 <exclude name="${capnp-natives.basePath}/**/META-INF/**"/>
             </fileset>
         </jar>
 
-        <artifact:attach file="${jarfile}" type="jar"/>
+        <artifact:attach file="${jarFile}" type="jar"/>
+
+        <artifact:attach
+            file="${maven.project.build.outputDirectory}/${capnp-natives.indexFileName}"
+            type="xml"
+            classifier="capnp-natives-index"/>
 
     </target>
 
     <target name="header-info">
-        <echo level="info">File name = ${capnp-natives.fileName}</echo>
-        <echo level="info">Base file name = ${capnp-natives.baseFileName}</echo>
-        <echo level="info">Fragment file name = ${capnp-natives.fragmentFileName}</echo>
+
+        <echo level="info">Descriptor file name = ${capnp-natives.fileName}</echo>
+        <echo level="info">Descriptor base file name = ${capnp-natives.baseFileName}</echo>
+        <echo level="info">Descriptor fragment file name = ${capnp-natives.fragmentFileName}</echo>
         <echo level="info">Output directory = ${capnp-natives.outputDirectory}</echo>
+
     </target>
 
 </project>

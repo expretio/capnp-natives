@@ -27,7 +27,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.expretio.maven</groupId>
+    <groupId>org.expretio.capnp</groupId>
     <artifactId>capnp-natives</artifactId>
     <version>0.5.3-SNAPSHOT</version>
 
@@ -68,6 +68,8 @@
     </pluginRepositories>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 
@@ -80,7 +82,8 @@
         <capnp-natives.fileName>capnp-natives.xml</capnp-natives.fileName>
         <capnp-natives.baseFileName>capnp-natives-base.xml</capnp-natives.baseFileName>
         <capnp-natives.fragmentFileName>capnp-natives-fragment.xml</capnp-natives.fragmentFileName>
-        <capnp-natives.basePath>org/expretio/maven/capnp/natives</capnp-natives.basePath>
+        <capnp-natives.indexFileName>capnp-natives-index.xml</capnp-natives.indexFileName>
+        <capnp-natives.basePath>org/expretio/capnp/natives</capnp-natives.basePath>
         <capnp-natives.outputDirectory>${project.build.directory}/capnp</capnp-natives.outputDirectory>
 
         <assembly.file>src/main/assemble/assemble.xml</assembly.file>
@@ -110,109 +113,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>groovy-maven-plugin</artifactId>
-                <version>2.0</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <source>
-
-                                import static groovy.io.FileType.*;
-                                import groovy.util.*;
-                                import java.io.*;
-                                import java.nio.*;
-                                import org.dom4j.*;
-                                import org.dom4j.io.*;
-                                import be.hikage.xdt4j.*;
-
-                                capnpFileName = properties["capnp-natives.fileName"];
-                                capnpBaseFileName = properties["capnp-natives.baseFileName"];
-                                capnpFragmentFileName = properties["capnp-natives.fragmentFileName"];
-                                capnpOutputDirectory = new File( properties["capnp-natives.outputDirectory"] );
-                                capnpBasePathName = properties["capnp-natives.basePath"];
-                                capnpBaseFile =
-                                    new File(
-                                        project.build.outputDirectory,
-                                        capnpBaseFileName );
-                                capnpGlobalMetaInfDir =
-                                    new File(
-                                        project.build.outputDirectory,
-                                        "META-INF" );
-                                capnpFile =
-                                    new File(
-                                        capnpGlobalMetaInfDir,
-                                        capnpFileName );
-                                basePath =
-                                    new File(
-                                        project.build.outputDirectory,
-                                        capnpBasePathName );
-
-                                capnpGlobalMetaInfDir.mkdirs();
-                                capnpOutputDirectory.mkdirs();
-
-                                capnpFile &lt;&lt; capnpBaseFile.text;
-
-                                baseDescriptorDoc = new SAXReader().read( capnpBaseFile );
-
-                                basePath.traverse(
-                                    [
-                                        type: FILES,
-                                        nameFilter: capnpFragmentFileName
-                                    ],
-                                    {
-                                        target =
-                                            new File(
-                                                new File( capnpOutputDirectory, capnpBasePathName ),
-                                                it.parentFile.parentFile.name + "/" + it.parentFile.name + "/META-INF"
-                                            );
-
-                                        target.mkdirs();
-
-                                        mergeXml(
-                                            baseDescriptorDoc,
-                                            it,
-                                            new File( target, capnpFileName )
-                                        );
-
-                                        mergeXml( new SAXReader().read( capnpFile ), it, capnpFile );
-                                    }
-                                );
-
-                                def mergeXml( Document baseDoc, File inFile, File outFile )
-                                {
-                                    transformDoc = new SAXReader().read( inFile );
-
-                                    xmlWriter =
-                                        new XMLWriter(
-                                            new BufferedWriter( new FileWriter( outFile ) ),
-                                            OutputFormat.createPrettyPrint()
-                                        );
-
-                                    xmlWriter.write(
-                                        new XdtTransformer().transform( baseDoc, transformDoc ),
-                                    )
-
-                                    xmlWriter.close();
-                                }
-
-                            </source>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>be.hikage</groupId>
-                        <artifactId>xdt4j</artifactId>
-                        <version>1.0.2</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.nuxeo.build</groupId>
                 <artifactId>ant-assembly-maven-plugin</artifactId>
                 <version>2.0.4</version>
@@ -228,6 +128,18 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>2.4.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>be.hikage</groupId>
+                        <artifactId>xdt4j</artifactId>
+                        <version>1.0.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

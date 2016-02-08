@@ -24,6 +24,6 @@
   -->
 <capnp-natives>
 
-    <base-path>org/expretio/maven/capnp/natives</base-path>
+    <base-path>org/expretio/capnp/natives</base-path>
 
 </capnp-natives>
