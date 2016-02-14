@@ -35,11 +35,40 @@
 
     <name>capnp-resource-provider</name>
 
+    <description>
+        Cap’n Proto natives.
+    </description>
+
     <inceptionYear>2015</inceptionYear>
 
     <organization>
         <name>Expretio Technologies, Inc</name>
     </organization>
+
+    <developers>
+        <developer>
+            <id>mtetreau</id>
+            <name>Marc Tetreau</name>
+            <roles>
+                <role>Lead Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>p</id>
+            <name>Pino Silvaggio</name>
+            <roles>
+                <role>Lead Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/expretio/capnp-natives.git</connection>
+        <developerConnection>scm:git:https://github.com/expretio/capnp-natives.git</developerConnection>
+        <url>https://github.com/expretio/capnp-natives</url>
+    </scm>
 
     <issueManagement>
         <system>github</system>
