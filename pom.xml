@@ -35,7 +35,7 @@
 
     <groupId>org.expretio.capnp</groupId>
     <artifactId>capnp-natives</artifactId>
-    <version>0.5.3-SNAPSHOT</version>
+    <version>0.5.3</version>
 
     <packaging>pom</packaging>
 
